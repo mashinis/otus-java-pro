@@ -1,7 +1,8 @@
 package ru.mashinis;
 
 public class Main {
+
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        MyTestFramework.runTests(SimpleAnnotationProcessor.class);
     }
 }

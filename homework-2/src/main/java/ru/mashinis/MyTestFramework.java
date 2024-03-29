@@ -7,15 +7,25 @@ import ru.mashinis.annotation.Test;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class MyTestFramework {
-    public static void runTests(Class<?> testClass) {
-        Method beforeSuiteMethod = null;
-        Method afterSuiteMethod = null;
-        List<Method> testMethods = new ArrayList<>();
+    private static Method beforeSuiteMethod = null;
+    private static Method afterSuiteMethod = null;
+    private static List<Method> testMethods = null;
+    private static final Logger logger = LogManager.getLogger(MyTestFramework.class);
 
-        // Получаем все методы класса и отбираем методы с нужными аннотациями
-        Method[] methods = testClass.getDeclaredMethods();
+    public static void runTests(Class<?> testClass) {
+
+        testMethods = methodMyAnnotation(testClass.getDeclaredMethods());
+        testMethods.sort(Comparator.comparingInt(method -> method.getAnnotation(Test.class).priority()));
+        runTesting();
+    }
+
+    // Получаем все методы класса и отбираем методы с нужными аннотациями
+    private static List<Method> methodMyAnnotation(Method[] methods) {
+        List<Method> testMethods = new ArrayList<>();
         for (Method method : methods) {
             if (method.isAnnotationPresent(BeforeSuite.class)) {
                 if (beforeSuiteMethod == null) {
@@ -33,10 +43,10 @@ public class MyTestFramework {
                 testMethods.add(method);
             }
         }
+        return testMethods;
+    }
 
-        // Сортируем тестовые методы по приоритету
-        testMethods.sort(Comparator.comparingInt(method -> method.getAnnotation(Test.class).priority()));
-
+    private static void runTesting() {
         // Выполняем тесты
         try {
             if (beforeSuiteMethod != null) {
@@ -52,12 +62,13 @@ public class MyTestFramework {
                     successfulTests++;
                 } catch (InvocationTargetException e) {
                     failedTests++;
-                    System.out.println("Test failed: " + testMethod.getName());
+                    logger.info("Test failed: " + testMethod.getName());
                     Throwable originalException = e.getCause(); // Получаем оригинальное исключение
                     if (originalException != null) {
-                        System.out.println("Original exception: " + originalException.getMessage());
+                        logger.info("Original exception: " + originalException.getMessage());
                         originalException.printStackTrace();
                     } else {
+                        logger.error(e);
                         e.printStackTrace();
                     }
                 }
@@ -67,11 +78,12 @@ public class MyTestFramework {
                 afterSuiteMethod.invoke(null);
             }
 
-            System.out.println("Tests summary:");
-            System.out.println("Successful: " + successfulTests);
-            System.out.println("Failed: " + failedTests);
-            System.out.println("Total: " + (successfulTests + failedTests));
+            logger.info("Tests summary:");
+            logger.info("Successful: " + successfulTests);
+            logger.info("Failed: " + failedTests);
+            logger.info("Total: " + (successfulTests + failedTests));
         } catch (IllegalAccessException | InvocationTargetException e) {
+            logger.error(e);
             e.printStackTrace();
         }
     }

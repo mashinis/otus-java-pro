@@ -1,4 +1,3 @@
 rootProject.name = 'homework'
 include 'homework-2'
 include 'homework-1'
-

@@ -62,10 +62,10 @@ public class MyTestFramework {
                     successfulTests++;
                 } catch (InvocationTargetException e) {
                     failedTests++;
-                    logger.info("Test failed: " + testMethod.getName());
+                    logger.info(String.format("Test failed: %s", testMethod.getName()));
                     Throwable originalException = e.getCause(); // Получаем оригинальное исключение
                     if (originalException != null) {
-                        logger.info("Original exception: " + originalException.getMessage());
+                        logger.info(String.format("Original exception: %s", originalException.getMessage()));
                         originalException.printStackTrace();
                     } else {
                         logger.error(e);
@@ -79,9 +79,9 @@ public class MyTestFramework {
             }
 
             logger.info("Tests summary:");
-            logger.info("Successful: " + successfulTests);
-            logger.info("Failed: " + failedTests);
-            logger.info("Total: " + (successfulTests + failedTests));
+            logger.info(String.format("Successful: %s", successfulTests));
+            logger.info(String.format("Failed: %s", failedTests));
+            logger.info(String.format("Total: %s", (successfulTests + failedTests)));
         } catch (IllegalAccessException | InvocationTargetException e) {
             logger.error(e);
             e.printStackTrace();

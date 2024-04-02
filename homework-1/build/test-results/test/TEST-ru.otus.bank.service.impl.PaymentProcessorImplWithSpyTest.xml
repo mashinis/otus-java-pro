@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="ru.otus.bank.service.impl.PaymentProcessorImplWithSpyTest" tests="2" skipped="0" failures="1" errors="0" timestamp="2024-03-26T10:26:17" hostname="DESKTOP-QCG63MA" time="1.169">
+<testsuite name="ru.otus.bank.service.impl.PaymentProcessorImplWithSpyTest" tests="2" skipped="0" failures="1" errors="0" timestamp="2024-04-02T09:04:07" hostname="DESKTOP-QCG63MA" time="0.045">
   <properties/>
-  <testcase name="testTransferWithCommission()" classname="ru.otus.bank.service.impl.PaymentProcessorImplWithSpyTest" time="1.149">
+  <testcase name="testTransferWithCommission()" classname="ru.otus.bank.service.impl.PaymentProcessorImplWithSpyTest" time="0.039">
     <failure message="org.opentest4j.AssertionFailedError: expected: &lt;8.9000000000000003552713678800500929355621337890625&gt; but was: &lt;9.1&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: expected: &lt;8.9000000000000003552713678800500929355621337890625&gt; but was: &lt;9.1&gt;
 	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
 	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
@@ -92,11 +92,7 @@
 	at app//worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
 </failure>
   </testcase>
-  <testcase name="testTransfer()" classname="ru.otus.bank.service.impl.PaymentProcessorImplWithSpyTest" time="0.016"/>
+  <testcase name="testTransfer()" classname="ru.otus.bank.service.impl.PaymentProcessorImplWithSpyTest" time="0.006"/>
   <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[WARNING: A Java agent has been loaded dynamically (C:\Users\mashi_kb9d2ue\gradle\gradle-8.7\bin\caches\modules-2\files-2.1\net.bytebuddy\byte-buddy-agent\1.14.12\be4984cb6fd1ef1d11f218a648889dfda44b8a15\byte-buddy-agent-1.14.12.jar)
-WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
-WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
-WARNING: Dynamic loading of agents will be disallowed by default in a future release
-]]></system-err>
+  <system-err><![CDATA[]]></system-err>
 </testsuite>

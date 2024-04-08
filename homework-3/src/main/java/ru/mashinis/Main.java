@@ -1,5 +1,6 @@
 package ru.mashinis;
 
+// Можно попробовать написать через тесты вместо вывода в консоль
 public class Main {
 
     public static void main(String[] args) {

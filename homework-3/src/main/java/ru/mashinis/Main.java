@@ -12,10 +12,10 @@ public class Main {
         System.out.println();
 
         // 2
-        findTaskId(myStreamApi, 0);
-        findTaskId(myStreamApi, 1);
-        findTaskId(myStreamApi, 11);
-        findTaskId(myStreamApi, 10);
+        System.out.println(myStreamApi.findTaskId(0));
+        System.out.println(myStreamApi.findTaskId(1));
+        System.out.println(myStreamApi.findTaskId(11));
+        System.out.println(myStreamApi.findTaskId(10));
         System.out.println();
 
         // 3
@@ -28,11 +28,4 @@ public class Main {
         System.out.println(myStreamApi.countTaskByStatus(StatusTask.CLOSED) + " - Задачи со статусом CLOSED.");
     }
 
-    public static void findTaskId(MyStreamApi myStreamApi, int id) {
-        if (myStreamApi.isTaskId(id)) {
-            System.out.println("Задача с ID = " + id + " существует.");
-        } else {
-            System.out.println("Задача с ID = " + id + " не существует!");
-        }
-    }
 }

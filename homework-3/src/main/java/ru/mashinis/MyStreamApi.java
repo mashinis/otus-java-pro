@@ -3,6 +3,7 @@ package ru.mashinis;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class MyStreamApi {
@@ -32,9 +33,15 @@ public class MyStreamApi {
     }
 
     /** TODO 2. Проверка наличия задачи с указанным ID; */
-    public boolean isTaskId(int id) {
-        return testData.stream()
+    public String findTaskId(int id) {
+        boolean isTaskId = testData.stream()
                 .anyMatch(idTask -> idTask.getIdTask() == id);
+
+        if (isTaskId) {
+            return String.format(Locale.forLanguageTag("ru"),"Задача с ID = %s существует.", id);
+        }
+
+        return String.format(Locale.forLanguageTag("ru"),"Задачи с ID = %s не существует!", id);
     }
 
     /** TODO 3. Получение списка задач в отсортированном по статусу виде */

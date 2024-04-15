@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CustomThreadPool {
@@ -37,7 +36,6 @@ public class CustomThreadPool {
     }
 
     private class WorkerThread extends Thread {
-        // holds tasks
         private Queue<Runnable> taskQueue;
 
         private CustomThreadPool threadPool;
@@ -49,25 +47,20 @@ public class CustomThreadPool {
 
         @Override
         public void run() {
-            try {
-                while (!threadPool.isThreadPoolShutDownInitiated.get() || !taskQueue.isEmpty()) {
-                    Runnable r;
-                    while ((r = taskQueue.poll()) != null) {
-                        r.run();
+            while (true) {
+                Runnable task = null;
+                synchronized (threadPool) {
+                    if (threadPool.isThreadPoolShutDownInitiated.get() && taskQueue.isEmpty()) {
+                        return;
                     }
-                    Thread.sleep(1);
+                    if (!taskQueue.isEmpty()) {
+                        task = taskQueue.poll();
+                    }
                 }
-            } catch (RuntimeException | InterruptedException e) {
-                throw new CustomThreadPoolException(e);
+                if (task != null) {
+                    task.run();
+                }
             }
-        }
-    }
-
-    private class CustomThreadPoolException extends RuntimeException {
-        private static final long serialVersionUID = 1L;
-
-        public CustomThreadPoolException(Throwable t) {
-            super(t);
         }
     }
 }

@@ -1,73 +1,62 @@
 package ru.mashinis;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class CustomThreadPool {
-    private Queue<Runnable> runnableQueue;
-    private List<WorkerThread> threads;
-    private AtomicBoolean isThreadPoolShutDownInitiated;
+public class CustomThreadPool implements Runnable {
+    private final AtomicBoolean isShutdown;
+    private final Queue<Runnable> taskQueue;
 
-    public CustomThreadPool(final int noOfThreads) {
-        this.runnableQueue = new LinkedList<>();
-        this.threads = new ArrayList<>(noOfThreads);
-        this.isThreadPoolShutDownInitiated = new AtomicBoolean(false);
+    public CustomThreadPool(final int opacity) {
+        Thread[] threads = new Thread[opacity];
+        this.isShutdown = new AtomicBoolean(false);
+        this.taskQueue = new LinkedList<>();
 
-        for (int i = 1; i <= noOfThreads; i++) {
-            WorkerThread thread = new WorkerThread(runnableQueue, this);
-            thread.setName("Worker Thread - " + i);
-            thread.start();
-            threads.add(thread);
+        for (int i = 0; i < opacity; i++) {
+            threads[i] = new Thread(this);
+            threads[i].setName("Worker Thread - " + i);
+            threads[i].start();
         }
     }
 
-    public void execute(Runnable r) {
-        if (isThreadPoolShutDownInitiated.get()) {
+    public synchronized void execute(Runnable task) {
+        if (isShutdown.get()) {
             throw new IllegalStateException("ThreadPool уже завершен");
         }
-        runnableQueue.add(r);
+        taskQueue.add(task);
+        notify();
     }
 
-    public void shutdown() {
-        isThreadPoolShutDownInitiated.set(true);
+    public synchronized void shutdown() {
+        isShutdown.set(true);
+        notifyAll();
     }
 
-    private class WorkerThread extends Thread {
-        // holds tasks
-        private Queue<Runnable> taskQueue;
-
-        private CustomThreadPool threadPool;
-
-        public WorkerThread(Queue<Runnable> taskQueue, CustomThreadPool threadPool) {
-            this.taskQueue = taskQueue;
-            this.threadPool = threadPool;
-        }
-
-        @Override
-        public void run() {
-            try {
-                while (!threadPool.isThreadPoolShutDownInitiated.get() || !taskQueue.isEmpty()) {
-                    Runnable r;
-                    while ((r = taskQueue.poll()) != null) {
-                        r.run();
+    @Override
+    public void run() {
+        while (true) {
+            Runnable task = null;
+            synchronized (this) {
+                while (taskQueue.isEmpty() && !isShutdown.get()) {
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                    Thread.sleep(1);
                 }
-            } catch (RuntimeException | InterruptedException e) {
-                throw new CustomThreadPoolException(e);
+                if (isShutdown.get() && taskQueue.isEmpty()) {
+                    break;
+                }
+                task = taskQueue.poll();
             }
-        }
-    }
-
-    private class CustomThreadPoolException extends RuntimeException {
-        private static final long serialVersionUID = 1L;
-
-        public CustomThreadPoolException(Throwable t) {
-            super(t);
+            try {
+                if (task != null) {
+                    task.run();
+                }
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

@@ -28,12 +28,12 @@ public class CustomThreadPool {
             throw new IllegalStateException("ThreadPool уже завершен");
         }
         taskQueue.add(task);
-        notify(); // Оповещение о наличии новой задачи
+        notify();
     }
 
     public synchronized void shutdown() {
         isShutdown.set(true);
-        notifyAll(); // Оповещение всех потоков о завершении
+        notifyAll();
     }
 
     private class WorkerThread extends Thread {
@@ -41,7 +41,7 @@ public class CustomThreadPool {
 
         public void shutdown() {
             isStopped = true;
-            interrupt(); // Прерываем поток, чтобы выйти из ожидания и завершить его работу
+            interrupt();
         }
 
         @Override
@@ -51,23 +51,23 @@ public class CustomThreadPool {
                 synchronized (CustomThreadPool.this) {
                     while (taskQueue.isEmpty() && !isShutdown.get()) {
                         try {
-                            CustomThreadPool.this.wait(); // Ожидание новой задачи
+                            CustomThreadPool.this.wait();
                         } catch (InterruptedException e) {
                             Thread.currentThread().interrupt();
                             return;
                         }
                     }
                     if (isShutdown.get()) {
-                        return; // Выход из потока при завершении работы
+                        return;
                     }
                     task = taskQueue.poll();
                 }
                 try {
                     if (task != null) {
-                        task.run(); // Выполнение задачи
+                        task.run();
                     }
                 } catch (RuntimeException e) {
-                    e.printStackTrace(); // Обработка исключений
+                    e.printStackTrace();
                 }
             }
         }

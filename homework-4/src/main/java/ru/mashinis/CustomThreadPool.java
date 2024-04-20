@@ -1,64 +1,73 @@
 package ru.mashinis;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CustomThreadPool {
-    private Queue<Runnable> runnableQueue;
-    private List<WorkerThread> threads;
-    private AtomicBoolean isThreadPoolShutDownInitiated;
+    private final int poolSize;
+    private final Thread[] threads;
+    private final Queue<Runnable> taskQueue;
+    private final AtomicBoolean isShutdown;
 
-    public CustomThreadPool(final int noOfThreads) {
-        this.runnableQueue = new LinkedList<>();
-        this.threads = new ArrayList<>(noOfThreads);
-        this.isThreadPoolShutDownInitiated = new AtomicBoolean(false);
+    public CustomThreadPool(int poolSize) {
+        this.poolSize = poolSize;
+        this.threads = new Thread[poolSize];
+        this.taskQueue = new LinkedList<>();
+        this.isShutdown = new AtomicBoolean(false);
 
-        for (int i = 1; i <= noOfThreads; i++) {
-            WorkerThread thread = new WorkerThread(runnableQueue, this);
-            thread.setName("Worker Thread - " + i);
-            thread.start();
-            threads.add(thread);
+        for (int i = 0; i < poolSize; i++) {
+            threads[i] = new WorkerThread();
+            threads[i].setName("Worker Thread - " + i);
+            threads[i].start();
         }
     }
 
-    public void execute(Runnable r) {
-        if (isThreadPoolShutDownInitiated.get()) {
+    public synchronized void execute(Runnable task) {
+        if (isShutdown.get()) {
             throw new IllegalStateException("ThreadPool уже завершен");
         }
-        runnableQueue.add(r);
+        taskQueue.add(task);
+        notify(); // Оповещение о наличии новой задачи
     }
 
-    public void shutdown() {
-        isThreadPoolShutDownInitiated.set(true);
+    public synchronized void shutdown() {
+        isShutdown.set(true);
+        notifyAll(); // Оповещение всех потоков о завершении
     }
 
     private class WorkerThread extends Thread {
-        private Queue<Runnable> taskQueue;
+        private volatile boolean isStopped = false;
 
-        private CustomThreadPool threadPool;
-
-        public WorkerThread(Queue<Runnable> taskQueue, CustomThreadPool threadPool) {
-            this.taskQueue = taskQueue;
-            this.threadPool = threadPool;
+        public void shutdown() {
+            isStopped = true;
+            interrupt(); // Прерываем поток, чтобы выйти из ожидания и завершить его работу
         }
 
         @Override
         public void run() {
-            while (true) {
+            while (!isStopped) {
                 Runnable task = null;
-                synchronized (threadPool) {
-                    if (threadPool.isThreadPoolShutDownInitiated.get() && taskQueue.isEmpty()) {
-                        return;
+                synchronized (CustomThreadPool.this) {
+                    while (taskQueue.isEmpty() && !isShutdown.get()) {
+                        try {
+                            CustomThreadPool.this.wait(); // Ожидание новой задачи
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                            return;
+                        }
                     }
-                    if (!taskQueue.isEmpty()) {
-                        task = taskQueue.poll();
+                    if (isShutdown.get()) {
+                        return; // Выход из потока при завершении работы
                     }
+                    task = taskQueue.poll();
                 }
-                if (task != null) {
-                    task.run();
+                try {
+                    if (task != null) {
+                        task.run(); // Выполнение задачи
+                    }
+                } catch (RuntimeException e) {
+                    e.printStackTrace(); // Обработка исключений
                 }
             }
         }

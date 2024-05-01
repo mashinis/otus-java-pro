@@ -48,42 +48,46 @@ public final class Product {
         private int width;
         private int length;
         private int height;
-        public Builder setId(int id) {
+
+        private Builder() {
+        }
+
+        public Builder id(int id) {
             this.id = id;
             return this;
         }
 
-        public Builder setTitle(String title) {
+        public Builder title(String title) {
             this.title = title;
             return this;
         }
 
-        public Builder setDescription(String description) {
+        public Builder description(String description) {
             this.description = description;
             return this;
         }
 
-        public Builder setCost(double cost) {
+        public Builder cost(double cost) {
             this.cost = cost;
             return this;
         }
 
-        public Builder setWeight(int weight) {
+        public Builder weight(int weight) {
             this.weight = weight;
             return this;
         }
 
-        public Builder setWidth(int width) {
+        public Builder width(int width) {
             this.width = width;
             return this;
         }
 
-        public Builder setLength(int length) {
+        public Builder length(int length) {
             this.length = length;
             return this;
         }
 
-        public Builder setHeight(int height) {
+        public Builder height(int height) {
             this.height = height;
             return this;
         }

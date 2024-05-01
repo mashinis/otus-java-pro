@@ -5,8 +5,11 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Main {
+    private static int count = 0;
+
     public static void main(String[] args) {
-        Box<String> box = new Box(addTestData());
+
+        Box<String> box = new Box<>(addTestData(), addTestData(), addTestData(), addTestData());
         print(new BoxIterator<>(box));
     }
 
@@ -17,16 +20,14 @@ public class Main {
         }
     }
 
-    private static List<List<String>> addTestData() {
-        List<List<String>> lists = new ArrayList<>();
-        for (int l = 0; l < 4; l++) {
-            List<String> list = new ArrayList<>();
-            for (int i = 0; i < 3; i++) {
-                list.add("List " + l + " - Item " + i);
-            }
-            list.add("------------------");
-            lists.add(list);
+    private static List<String> addTestData() {
+        ++count;
+        List<String> list = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            list.add("List " + count + " - Item " + i);
         }
-        return lists;
+        list.add("------------------");
+
+        return list;
     }
 }

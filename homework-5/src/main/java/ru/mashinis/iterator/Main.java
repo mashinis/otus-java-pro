@@ -9,7 +9,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Box<String> box = new Box<>(addTestData(), addTestData(), addTestData(), addTestData());
+        Box<String> box = new Box<>(addTestData(), addTestData2(), addTestData(), addTestData());
         print(new BoxIterator<>(box));
     }
 
@@ -24,6 +24,17 @@ public class Main {
         ++count;
         List<String> list = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
+            list.add("List " + count + " - Item " + i);
+        }
+        list.add("------------------");
+
+        return list;
+    }
+
+    private static List<String> addTestData2() {
+        ++count;
+        List<String> list = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
             list.add("List " + count + " - Item " + i);
         }
         list.add("------------------");

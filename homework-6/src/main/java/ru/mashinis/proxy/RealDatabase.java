@@ -18,6 +18,9 @@ public class RealDatabase implements Database {
     }
 
     public void insert(String nameTable, String data) {
+        if (nameTable == null || data == null) {
+            throw new IllegalArgumentException("Table name and data cannot be null");
+        }
         try {
             PreparedStatement statement = connection.prepareStatement("INSERT INTO " + nameTable + "(name) VALUES(?)");
             statement.setString(1, data);
@@ -29,6 +32,9 @@ public class RealDatabase implements Database {
     }
 
     public void update(String nameTable, int id, String newData) {
+        if (nameTable == null || newData == null) {
+            throw new IllegalArgumentException("Table name and new data cannot be null");
+        }
         try {
             PreparedStatement statement = connection.prepareStatement("UPDATE " + nameTable + " SET name=? WHERE id=?");
             statement.setString(1, newData);
@@ -41,6 +47,9 @@ public class RealDatabase implements Database {
     }
 
     public void delete(String nameTable, int id) {
+        if (nameTable == null) {
+            throw new IllegalArgumentException("Table name cannot be null");
+        }
         try {
             PreparedStatement statement = connection.prepareStatement("DELETE FROM " + nameTable + " WHERE id=?");
             statement.setInt(1, id);
@@ -52,6 +61,9 @@ public class RealDatabase implements Database {
     }
 
     public void read(String nameTable) {
+        if (nameTable == null) {
+            throw new IllegalArgumentException("Table name cannot be null");
+        }
         try {
             Statement statement = connection.createStatement();
             String selectDataSQL = "SELECT * FROM " + nameTable;

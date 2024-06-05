@@ -1,5 +1,7 @@
 package ru.mashinis.db.interaction.ex05_repositories.entity;
 
+import ru.mashinis.db.interaction.ex05_repositories.annotation.Getter;
+import ru.mashinis.db.interaction.ex05_repositories.annotation.Setter;
 import ru.mashinis.db.interaction.ex05_repositories.annotation.RepositoryField;
 import ru.mashinis.db.interaction.ex05_repositories.annotation.RepositoryIdField;
 import ru.mashinis.db.interaction.ex05_repositories.annotation.RepositoryTable;
@@ -8,19 +10,27 @@ import ru.mashinis.db.interaction.ex05_repositories.annotation.RepositoryTable;
 public class User {
     @RepositoryIdField
     @RepositoryField
+    @Getter("getId")
+    @Setter("setId")
     private Long id;
 
     @RepositoryField
+    @Getter("getLogin")
+    @Setter("setLogin")
     private String login;
 
     @RepositoryField
+    @Getter("getPassword")
+    @Setter("setPassword")
     private String password;
 
     @RepositoryField
+    @Getter("getNickname")
+    @Setter("setNickname")
     private String nickname;
 
-    public Long getId() {
-        return id;
+    public String getId() {
+        return login;
     }
 
     public void setId(Long id) {
@@ -51,8 +61,7 @@ public class User {
         this.nickname = nickname;
     }
 
-    public User() {
-    }
+    public User() {}
 
     public User(String login, String password, String nickname) {
         this.login = login;

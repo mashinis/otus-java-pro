@@ -1,8 +1,6 @@
 package ru.mashinis.db.interaction.ex05_repositories;
 
-import ru.mashinis.db.interaction.ex05_repositories.annotation.RepositoryField;
-import ru.mashinis.db.interaction.ex05_repositories.annotation.RepositoryIdField;
-import ru.mashinis.db.interaction.ex05_repositories.annotation.RepositoryTable;
+import ru.mashinis.db.interaction.ex05_repositories.annotation.*;
 import ru.mashinis.db.interaction.exceptions.ApplicationInitializationException;
 
 import java.lang.reflect.Field;
@@ -31,7 +29,6 @@ public class AbstractRepository<T> {
     }
 
     private void prepare(Class<T> cls) {
-        //String tableName = cls.getAnnotation(RepositoryTable.class).title();
         cachedFields = Arrays.stream(cls.getDeclaredFields())
                 .filter(f -> f.isAnnotationPresent(RepositoryField.class))
                 .filter(f -> !f.isAnnotationPresent(RepositoryIdField.class))
@@ -57,22 +54,33 @@ public class AbstractRepository<T> {
     }
 
     private Method getGetter(Field field) {
-        String getterName = "get" + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
-        try {
-            return cls.getMethod(getterName);
-        } catch (NoSuchMethodException e) {
-            throw new ApplicationInitializationException("Getter not found for field: " + field.getName(), e);
+        Getter getterAnnotation = field.getAnnotation(Getter.class);
+        if (getterAnnotation != null) {
+            String getterName = getterAnnotation.value();
+            try {
+                return cls.getMethod(getterName);
+            } catch (NoSuchMethodException e) {
+                throw new ApplicationInitializationException("Getter not found for field: " + field.getName(), e);
+            }
+        } else {
+            throw new ApplicationInitializationException("Getter annotation not found for field: " + field.getName());
         }
     }
 
     private Method getSetter(Field field) {
-        String setterName = "set" + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
-        try {
-            return cls.getMethod(setterName, field.getType());
-        } catch (NoSuchMethodException e) {
-            throw new ApplicationInitializationException("Setter not found for field: " + field.getName(), e);
+        Setter setterAnnotation = field.getAnnotation(Setter.class);
+        if (setterAnnotation != null) {
+            String setterName = setterAnnotation.value();
+            try {
+                return cls.getMethod(setterName, field.getType());
+            } catch (NoSuchMethodException e) {
+                throw new ApplicationInitializationException("Setter not found for field: " + field.getName(), e);
+            }
+        } else {
+            throw new ApplicationInitializationException("Setter annotation not found for field: " + field.getName());
         }
     }
+
 
     public void create(T entity) {
         String tableName = cls.getAnnotation(RepositoryTable.class).title();

@@ -1,5 +1,7 @@
 package ru.mashinis.db.interaction.ex05_repositories.entity;
 
+import ru.mashinis.db.interaction.ex05_repositories.annotation.Getter;
+import ru.mashinis.db.interaction.ex05_repositories.annotation.Setter;
 import ru.mashinis.db.interaction.ex05_repositories.annotation.RepositoryField;
 import ru.mashinis.db.interaction.ex05_repositories.annotation.RepositoryIdField;
 import ru.mashinis.db.interaction.ex05_repositories.annotation.RepositoryTable;
@@ -8,32 +10,24 @@ import ru.mashinis.db.interaction.ex05_repositories.annotation.RepositoryTable;
 public class Account {
     @RepositoryIdField
     @RepositoryField
+    @Getter("getId")
+    @Setter("setId")
     private Long id;
 
     @RepositoryField
+    @Getter("getAmount")
+    @Setter("setAmount")
     private Long amount;
 
-    @RepositoryField // TODO (name = "tp");
+    @RepositoryField
+    @Getter("getAccountType")
+    @Setter("setAccountType")
     private String accountType;
 
     @RepositoryField
+    @Getter("getStatus")
+    @Setter("setStatus")
     private String status;
-
-    public Account() {
-    }
-
-    public Account(Long amount, String accountType, String status) {
-        this.amount = amount;
-        this.accountType = accountType;
-        this.status = status;
-    }
-
-    public Account(Long id, Long amount, String accountType, String status) {
-        this.id = id;
-        this.amount = amount;
-        this.accountType = accountType;
-        this.status = status;
-    }
 
     public Long getId() {
         return id;
@@ -64,6 +58,22 @@ public class Account {
     }
 
     public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Account() {
+    }
+
+    public Account(Long amount, String accountType, String status) {
+        this.amount = amount;
+        this.accountType = accountType;
+        this.status = status;
+    }
+
+    public Account(Long id, Long amount, String accountType, String status) {
+        this.id = id;
+        this.amount = amount;
+        this.accountType = accountType;
         this.status = status;
     }
 

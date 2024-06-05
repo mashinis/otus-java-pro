@@ -1,4 +1,8 @@
-package ru.mashinis.db.interaction.ex05_repositories;
+package ru.mashinis.db.interaction.ex05_repositories.entity;
+
+import ru.mashinis.db.interaction.ex05_repositories.annotation.RepositoryField;
+import ru.mashinis.db.interaction.ex05_repositories.annotation.RepositoryIdField;
+import ru.mashinis.db.interaction.ex05_repositories.annotation.RepositoryTable;
 
 @RepositoryTable(title = "users")
 public class User {

@@ -1,7 +1,7 @@
 package ru.mashinis.db.interaction.ex05_repositories.for_remove;
 
 import ru.mashinis.db.interaction.ex05_repositories.DataSource;
-import ru.mashinis.db.interaction.ex05_repositories.User;
+import ru.mashinis.db.interaction.ex05_repositories.entity.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

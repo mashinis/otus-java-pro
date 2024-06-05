@@ -9,22 +9,22 @@ import ru.mashinis.db.interaction.ex05_repositories.annotation.RepositoryTable;
 @RepositoryTable(title = "accounts")
 public class Account {
     @RepositoryIdField
-    @RepositoryField
+    @RepositoryField(name = "id")
     @Getter("getId")
     @Setter("setId")
     private Long id;
 
-    @RepositoryField
+    @RepositoryField(name = "amount")
     @Getter("getAmount")
     @Setter("setAmount")
     private Long amount;
 
-    @RepositoryField
+    @RepositoryField(name = "tp")
     @Getter("getAccountType")
     @Setter("setAccountType")
     private String accountType;
 
-    @RepositoryField
+    @RepositoryField(name = "status")
     @Getter("getStatus")
     @Setter("setStatus")
     private String status;

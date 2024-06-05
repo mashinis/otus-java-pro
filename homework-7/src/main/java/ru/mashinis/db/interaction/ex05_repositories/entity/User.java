@@ -9,22 +9,22 @@ import ru.mashinis.db.interaction.ex05_repositories.annotation.RepositoryTable;
 @RepositoryTable(title = "users")
 public class User {
     @RepositoryIdField
-    @RepositoryField
+    @RepositoryField(name = "id")
     @Getter("getId")
     @Setter("setId")
     private Long id;
 
-    @RepositoryField
+    @RepositoryField(name = "login")
     @Getter("getLogin")
     @Setter("setLogin")
     private String login;
 
-    @RepositoryField
+    @RepositoryField(name = "password")
     @Getter("getPassword")
     @Setter("setPassword")
     private String password;
 
-    @RepositoryField
+    @RepositoryField(name = "nickname")
     @Getter("getNickname")
     @Setter("setNickname")
     private String nickname;
